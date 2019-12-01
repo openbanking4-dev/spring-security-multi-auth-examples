@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="MultiAuthSpringSecurityCookieAndAPIToken" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <module name="spring-security-multi-auth-examples-example1-cookie-and-api-token (1)" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="dev.openbanking4.spring.security.multiauth.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <option name="SPRING_BOOT_MAIN_CLASS" value="dev.openbanking4.spring.security.multiauth.MultiAuthSpringSecurityCookieAndAPIToken" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
