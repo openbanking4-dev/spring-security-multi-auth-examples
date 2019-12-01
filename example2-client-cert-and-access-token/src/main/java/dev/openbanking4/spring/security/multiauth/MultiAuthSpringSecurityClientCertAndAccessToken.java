@@ -83,57 +83,57 @@ public class MultiAuthSpringSecurityClientCertAndAccessToken {
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 			http
-					.authorizeRequests()
-					.anyRequest()
-					.permitAll()
-					.and()
-					.apply(new MultiAuthenticationCollectorConfigurer<HttpSecurity>()
-							/**
-							 * Authentication via a certificate
-							 * The username is the certificate subject.
-							 * We don't expect this app to do the SSL termination, therefore we will trust the header x-cert
-							 * populated by the gateway
-							 */
-							.collectorForAuthentication(X509Collector.x509Builder()
-									.collectorName("x509-cert")
-									.usernameCollector(certificatesChain -> {
-										try {
-											X500Name x500name = new JcaX509CertificateHolder(certificatesChain[0]).getSubject();
-											RDN cn = x500name.getRDNs(BCStyle.CN)[0];
-											return IETFUtils.valueToString(cn.getFirst().getValue());
-										} catch (CertificateEncodingException e) {
-											log.warn("Couldn't read CN from subject {}", certificatesChain[0].getSubjectDN(), e);
-											return null;
-										}
-									})
-									.collectFromHeader(CertificateHeaderFormat.PEM)
-									.headerName("x-cert")
-									.build()
-							)
-
-							/**
-							 * Authorization via an access token
-							 * The authorities are extracted from the 'scope' claim
-							 */
-							.collectorForAuthorzation(StatelessAccessTokenCollector.builder()
-									.collectorName("stateless-access-token")
-									.tokenValidator((tokenSerialised, currentAuthentication) -> {
-										JWT jwt = verifyJwtSignature(tokenSerialised);
-										verifyTokenBinding(jwt, currentAuthentication);
-										return jwt;
-									})
-									.build()
-							)
-
-							/**
-							 * Static authentication
-							 * If no authentication was possible with the previous collector, we default to the anonymous user
-							 */
-							.collectorForAuthentication(StaticUserCollector.builder()
-									.collectorName("StaticUser-anonymous")
-									.usernameCollector(() -> "anonymous")
-									.build())
+				.authorizeRequests()
+				.anyRequest()
+				.permitAll()
+				.and()
+				.apply(new MultiAuthenticationCollectorConfigurer<HttpSecurity>()
+					/**
+					 * Authentication via a certificate
+					 * The username is the certificate subject.
+					 * We don't expect this app to do the SSL termination, therefore we will trust the header x-cert
+					 * populated by the gateway
+					 */
+					.collectorForAuthentication(X509Collector.x509Builder()
+							.collectorName("x509-cert")
+							.usernameCollector(certificatesChain -> {
+								try {
+									X500Name x500name = new JcaX509CertificateHolder(certificatesChain[0]).getSubject();
+									RDN cn = x500name.getRDNs(BCStyle.CN)[0];
+									return IETFUtils.valueToString(cn.getFirst().getValue());
+								} catch (CertificateEncodingException e) {
+									log.warn("Couldn't read CN from subject {}", certificatesChain[0].getSubjectDN(), e);
+									return null;
+								}
+							})
+							.collectFromHeader(CertificateHeaderFormat.PEM)
+							.headerName("x-cert")
+							.build()
 					)
+
+					/**
+					 * Authorization via an access token
+					 * The authorities are extracted from the 'scope' claim
+					 */
+					.collectorForAuthorzation(StatelessAccessTokenCollector.builder()
+							.collectorName("stateless-access-token")
+							.tokenValidator((tokenSerialised, currentAuthentication) -> {
+								JWT jwt = verifyJwtSignature(tokenSerialised);
+								verifyTokenBinding(jwt, currentAuthentication);
+								return jwt;
+							})
+							.build()
+					)
+
+					/**
+					 * Static authentication
+					 * If no authentication was possible with the previous collector, we default to the anonymous user
+					 */
+					.collectorForAuthentication(StaticUserCollector.builder()
+							.collectorName("StaticUser-anonymous")
+							.usernameCollector(() -> "anonymous")
+							.build())
+				)
 			;
 		}
 	}

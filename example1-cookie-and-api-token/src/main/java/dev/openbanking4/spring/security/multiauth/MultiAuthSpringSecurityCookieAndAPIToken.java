@@ -69,58 +69,58 @@ public class MultiAuthSpringSecurityCookieAndAPIToken {
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 			http
-					.authorizeRequests()
-					.anyRequest()
-					.permitAll()
-					.and()
-					.apply(new MultiAuthenticationCollectorConfigurer<HttpSecurity>()
-							/**
-							 * Authentication & authorisation via a cookie 'SSO'
-							 * The authorities are extracted from the 'group' claim
-							 * The username is extracted from the 'sub' claim
-							 * Note: JWT cookies expected to be signed with HMAC with "Qt5y2isMydGwVuREoIomK9Ei70EoFQKH0GpcbtJ4" as a secret
-							 */
-							.collector(CustomJwtCookieCollector.builder()
-									.collectorName("Cookie-SSO")
-									.authoritiesCollector(token -> token.getJWTClaimsSet().getStringListClaim("group").stream()
-											.map(g -> new SimpleGrantedAuthority(g)).collect(Collectors.toSet()))
-									.tokenValidator(tokenSerialised -> {
-										JWSObject jwsObject = JWSObject.parse(tokenSerialised);
-										JWSVerifier verifier = new MACVerifier("Qt5y2isMydGwVuREoIomK9Ei70EoFQKH0GpcbtJ4");
-										jwsObject.verify(verifier);
-										return JWTParser.parse(tokenSerialised);
-									})
-									.cookieName("SSO")
-									.build()
-							)
-
-							/**
-							 * Authentication via an API key
-							 * The username and authorities are extracted by calling your API key service
-							 */
-							.collector(APIKeyCollector.<User>builder()
-									.collectorName("API-Key")
-									.apiKeyExtractor(req -> req.getHeader("key"))
-									.apiKeyValidator(apiKey -> {
-										//Here call the API key validator service. We will mock the response and build the
-										//user manually
-										return new User("bob", "",
-												Stream.of(new SimpleGrantedAuthority("repo-42")).collect(Collectors.toSet()));
-									})
-									.usernameCollector(User::getUsername)
-									.authoritiesCollector(user -> new HashSet<>(user.getAuthorities()))
-									.build()
-							)
-
-							/**
-							 * Static authentication
-							 * If no authentication was possible with the previous collector, we default to the anonymous user
-							 */
-							.collectorForAuthentication(StaticUserCollector.builder()
-									.collectorName("StaticUser-anonymous")
-									.usernameCollector(() -> "anonymous")
-									.build())
+				.authorizeRequests()
+				.anyRequest()
+				.permitAll()
+				.and()
+				.apply(new MultiAuthenticationCollectorConfigurer<HttpSecurity>()
+					/**
+					 * Authentication & authorisation via a cookie 'SSO'
+					 * The authorities are extracted from the 'group' claim
+					 * The username is extracted from the 'sub' claim
+					 * Note: JWT cookies expected to be signed with HMAC with "Qt5y2isMydGwVuREoIomK9Ei70EoFQKH0GpcbtJ4" as a secret
+					 */
+					.collector(CustomJwtCookieCollector.builder()
+							.collectorName("Cookie-SSO")
+							.authoritiesCollector(token -> token.getJWTClaimsSet().getStringListClaim("group").stream()
+									.map(g -> new SimpleGrantedAuthority(g)).collect(Collectors.toSet()))
+							.tokenValidator(tokenSerialised -> {
+								JWSObject jwsObject = JWSObject.parse(tokenSerialised);
+								JWSVerifier verifier = new MACVerifier("Qt5y2isMydGwVuREoIomK9Ei70EoFQKH0GpcbtJ4");
+								jwsObject.verify(verifier);
+								return JWTParser.parse(tokenSerialised);
+							})
+							.cookieName("SSO")
+							.build()
 					)
+
+					/**
+					 * Authentication via an API key
+					 * The username and authorities are extracted by calling your API key service
+					 */
+					.collector(APIKeyCollector.<User>builder()
+							.collectorName("API-Key")
+							.apiKeyExtractor(req -> req.getHeader("key"))
+							.apiKeyValidator(apiKey -> {
+								//Here call the API key validator service. We will mock the response and build the
+								//user manually
+								return new User("bob", "",
+										Stream.of(new SimpleGrantedAuthority("repo-42")).collect(Collectors.toSet()));
+							})
+							.usernameCollector(User::getUsername)
+							.authoritiesCollector(user -> new HashSet<>(user.getAuthorities()))
+							.build()
+					)
+
+					/**
+					 * Static authentication
+					 * If no authentication was possible with the previous collector, we default to the anonymous user
+					 */
+					.collectorForAuthentication(StaticUserCollector.builder()
+							.collectorName("StaticUser-anonymous")
+							.usernameCollector(() -> "anonymous")
+							.build())
+				)
 			;
 		}
 	}
