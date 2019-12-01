@@ -86,7 +86,7 @@ public class MultiAuthSpringSecurityCookieAndAPITokenTest {
         UserDetails userDetailsExpected = User.builder()
                 .username("bob")
                 .password("")
-                .authorities(Stream.of(new SimpleGrantedAuthority("repo-32")).collect(Collectors.toSet()))
+                .authorities(Stream.of(new SimpleGrantedAuthority("repo-42")).collect(Collectors.toSet()))
                 .build();
 
         mvc.perform(

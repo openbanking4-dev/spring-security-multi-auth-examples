@@ -105,7 +105,7 @@ public class MultiAuthSpringSecurityCookieAndAPIToken {
 										//Here call the API key validator service. We will mock the response and build the
 										//user manually
 										return new User("bob", "",
-												Stream.of(new SimpleGrantedAuthority("repo-32")).collect(Collectors.toSet()));
+												Stream.of(new SimpleGrantedAuthority("repo-42")).collect(Collectors.toSet()));
 									})
 									.usernameCollector(User::getUsername)
 									.authoritiesCollector(user -> new HashSet<>(user.getAuthorities()))
