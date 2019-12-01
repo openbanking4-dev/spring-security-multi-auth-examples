@@ -1,3 +1,8 @@
+[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fopenbanking4-dev%2Fspring-security-multi-auth-examples%2Fbadge%3Fref%3Dmaster&style=flat)](https://actions-badge.atrox.dev/openbanking4-dev/spring-security-multi-auth-examples/goto?ref=master)
+![GitHub](https://img.shields.io/github/license/openbanking4-dev/spring-security-multi-auth-examples)
+[![codecov](https://codecov.io/gh/openbanking4-dev/spring-security-multi-auth-examples/branch/master/graph/badge.svg)](https://codecov.io/gh/openbanking4-dev/spring-security-multi-auth-examples)
+
+
 # Spring security multi auth examples
 
 In this repo, we will show you examples of how to use the java library spring-security-multi-auth.
