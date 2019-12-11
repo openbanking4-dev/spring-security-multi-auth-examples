@@ -39,7 +39,7 @@
 
 	<properties>
 		<java.version>11</java.version>
-		<spring-security-multi-auth.version>0.0.43</spring-security-multi-auth.version>
+		<spring-security-multi-auth.version>2.2.1.0.0.52</spring-security-multi-auth.version>
 	</properties>
 
 	<modules>
